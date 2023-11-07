@@ -5,5 +5,5 @@ app_name = "trades"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<int:id>/detail/", views.detail, name="detail"),
+    path("<int:region_id>/detail/", views.detail, name="detail"),
 ]

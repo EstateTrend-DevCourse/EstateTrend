@@ -6,13 +6,14 @@ from .models import *
 
 # Create your views here.
 def index(request):
-    regions = ["서울", "부산"]
-    context = {"regions": regions, "id": 1}
+    regions = Region.objects.all()
+    context = {"regions": regions}
     return render(request, "trades/index.html", context)
 
 
-def detail(request, id):
-    region = "서울"
+def detail(request, region_id):
+    region = get_object_or_404(Region, pk=region_id)
+
     biggest_increase = "정자동"
     biggest_decrease = "상도동"
     context = {

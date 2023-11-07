@@ -15,7 +15,11 @@
 		{% if regions %}
 		<ul>
 			{% for region in regions %}
-			<li><a href="{% url 'trades:detail' id %}">{{region}}</a></li>
+			<li>
+				<a href="{% url 'trades:detail' region.id %}"
+					>{{region.dong_name}}</a
+				>
+			</li>
 			{% endfor %}
 		</ul>
 		{%else%}
