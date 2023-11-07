@@ -5,9 +5,17 @@
 		<p>{{biggest_increase}}은 00%로 가장 많이 오른 지역입니다.</p>
 		<p>{{biggest_decrease}}은 00%로 가장 많이 떨어진 지역입니다.</p>
 
-		{% if estates %} {% for estate in estates %}
-		<p>{{estate.estate_name}}</p>
-		{% endfor %} {% else %}
+		{% if estates %}
+		<ul>
+			{% for estate in estates %}
+			<li>
+				<a href="{% url 'trades:detail-trade' region.id estate.id %}"
+					>{{estate.estate_name}}</a
+				>
+			</li>
+			{% endfor %}
+		</ul>
+		{% else %}
 		<p>no estates.</p>
 		{% endif %}
 	</li>
