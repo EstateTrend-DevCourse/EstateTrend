@@ -1,0 +1,3 @@
+# ignore pyc cache file
+*.pyc
+db.sqlite3
