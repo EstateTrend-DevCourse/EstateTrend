@@ -1,6 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+from local_code import local1, get_local_codes
+
+# get_local_codes 함수를 사용하여 모든 지역의 key를 가져옵니다.
+all_local_codes = get_local_codes(local1)
 
 url = "http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade"
 
@@ -9,6 +13,7 @@ decoding = "O9YLfGdeRwmJITv50o9b2+VvgzNxJ/HL4C33nn3+O59eXlvNm+sqAC3UY+F1UmTvhc/A
 
 api_key_decode = requests.utils.unquote(encoding)
 
+date1 = ['202309','202310']
 
 params ={'serviceKey' : api_key_decode, 'LAWD_CD' : '11110', 'DEAL_YMD' : '201912' }
 
