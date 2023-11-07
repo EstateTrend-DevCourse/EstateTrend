@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.urls import reverse
 from .models import *
 
 
@@ -12,6 +13,7 @@ def index(request):
 
 def detail(request, region_id):
     region = get_object_or_404(Region, pk=region_id)
+
     biggest_increase = "정자동"
     biggest_decrease = "상도동"
     context = {
