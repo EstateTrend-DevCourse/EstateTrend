@@ -1,69 +1,71 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
+	<head>
+		<meta charset="utf-8" />
+		<!--한글 에러 방지-->
 
-        <meta charset="utf-8">      <!--한글 에러 방지-->
+		<title>주택 매매 가격 동향</title>
+		<link
+			href="templates/trades/style.css"
+			rel="stylesheet"
+			type="text/css"
+		/>
+	</head>
 
-        <title>주택 매매 가격 동향</title>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
-    </head>
-    
+	<body>
+		<div id="logo" class="Logo">
+			<p>주택 매매 가격 동향</p>
+		</div>
 
-    <body>
-        <div id="logo" class="Logo">
-            <p>주택 매매 가격 동향</p>
-        </div>            
+		<main>
+			<!-- 지역 선택 -->
+			<div id="SideBar" class="SideBar">
+				<h1>지역 선택</h1>
+				<h2>
+					{% if regions %}
 
-        <main>
-        
-            <!-- 지역 선택 -->
-            <div id="SideBar" class="SideBar">
+					<ul class="tabs">
+						{% for region in regions %}
+						<li class="tab" data-tab="tab1">
+							<a href="{% url 'trades:detail' region.id %}"
+								>{{region.dong_name}}</a
+							>
+						</li>
 
-                <h1>지역 선택</h1>
-                <h2>
-                    {% if regions %}
-                
-                    <ul class="tabs">
-                        {% for region in regions %}
-                        <li class="tab" data-tab="tab1">
-                            <a href="{% url 'trades:templates:detail1' region.id %}">{{region.dong_name}}</a>
-                        </li>
-                        
-                        {% endfor %}
-                    </ul>
-                    
-                    {% else %}
-                    <p>no regions</p>
-                    {% endif %}
-                </h2>
-                
-                <h3>
-                    <ul>
-                        <div id="tab1" class="tab_list">
-                                <li>A시</li>
-                                <li>A시</li>
-                                <li>A시</li>
-                                <li>A시</li>
-                        </div>
-                    </ul>    
-                </h3>
+						{% endfor %}
+					</ul>
 
-            </div><!--
+					{% else %}
+					<p>no regions</p>
+					{% endif %}
+				</h2>
 
-            --><div id="Contents" class="Contents">
+				<h3>
+					<ul>
+						<div id="tab1" class="tab_list">
+							<li>A시</li>
+							<li>A시</li>
+							<li>A시</li>
+							<li>A시</li>
+						</div>
+					</ul>
+				</h3>
+			</div>
+			<!--
 
-                    <!-- 등락  -->
-                    <div id="updown" class="updown">
-                        <h1>등락</h1> 
-                    </div>
+            -->
+			<div id="Contents" class="Contents">
+				<!-- 등락  -->
+				<div id="updown" class="updown">
+					<h1>등락</h1>
+				</div>
 
-                    <!-- 지도 -->
-                    <div id="map" class="map">
-                        <h1>지도</h1>
-                    </div>
-
-                </div>
-
-        </main>
-    </body>
+				<!-- 지도 -->
+				<div id="map" class="map">
+					<h1>지도</h1>
+				</div>
+			</div>
+		</main>
+	</body>
 </html>

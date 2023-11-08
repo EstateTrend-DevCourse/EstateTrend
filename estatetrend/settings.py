@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "trades.apps.TradesConfig",
+    "map_visual.apps.MapVisualConfig",
 ]
 
 MIDDLEWARE = [

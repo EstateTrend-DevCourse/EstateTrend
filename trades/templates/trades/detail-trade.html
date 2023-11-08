@@ -1,0 +1,13 @@
+{{estate.estate_name}}의 거래 내역 {% if trades %}
+<ul>
+	{% for trade in trades %}
+	<li>
+		{{trade.trade_year}}년 {{trade.trade_month}}월 {{trade.trade_day}}일
+		<br />
+		거래가 : {{trade.trade_price}}
+	</li>
+	{% endfor %}
+</ul>
+{% else %}
+<p>거래가 존재하지 않습니다.</p>
+{% endif %}
