@@ -36,7 +36,7 @@ def make_dict_result():
 
     api_key_decode = requests.utils.unquote(encoding)
 
-    date_month = ['202309','202310']
+    date_month = ['202308','202309','202310']
 
     result = []
 
