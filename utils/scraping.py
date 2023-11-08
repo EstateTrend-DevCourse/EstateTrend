@@ -317,8 +317,8 @@ def push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, �
 def make_dict_result():
     url = "http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade"
 
-    encoding = "O9YLfGdeRwmJITv50o9b2%2BVvgzNxJ%2FHL4C33nn3%2BO59eXlvNm%2BsqAC3UY%2BF1UmTvhc%2FA1LgkfOtYRMT%2BF1i9zQ%3D%3D"
-    decoding = "O9YLfGdeRwmJITv50o9b2+VvgzNxJ/HL4C33nn3+O59eXlvNm+sqAC3UY+F1UmTvhc/A1LgkfOtYRMT+F1i9zQ=="
+    encoding = "9IyndkiMrrzo5eLkP%2BI%2FsKhMYeg0jb8hNwqpdPHdeRKS5WuCsdT%2FbA8urOBesACx9E9cmdhLVs9sDvAFiyVlsA%3D%3D"
+    decoding = "9IyndkiMrrzo5eLkP+I/sKhMYeg0jb8hNwqpdPHdeRKS5WuCsdT/bA8urOBesACx9E9cmdhLVs9sDvAFiyVlsA=="
 
     api_key_decode = requests.utils.unquote(encoding)
 
