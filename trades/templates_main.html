@@ -4,7 +4,7 @@
 
         <meta charset="utf-8">      <!--한글 에러 방지-->
 
-        <title>아파트 매매 동향</title>
+        <title>주택 매매 가격 동향</title>
         <link href="style.css" rel="stylesheet" type="text/css"/>
     
         </style>
@@ -21,12 +21,18 @@
             <!-- 지역 선택 -->
             <div id="SideBar" class="SideBar">
 
-                <ul class="tabs">
-                    <li class="tab" data-tab="tab1">전국</li>
-                    <li class="tab" data-tab="tab2">도/시</li>
-                    <li class="tab" data-tab="tab3">구</li>
-                </ul>
+                <h1>지역 선택</h1>
 
+                <h2>
+                    <ul class="tabs">
+                        <li class="tab" data-tab="tab1">
+                            <a href="">전국</a>
+                        </li>
+                        <li class="tab" data-tab="tab2">도/시</li>
+                        <li class="tab" data-tab="tab3">구</li>
+                    </ul>    
+                </h2>
+                
                 <ul>
                     <div id="tab1" class="tab_list">
                             <li>A시</li>
@@ -34,14 +40,16 @@
                             <li>A시</li>
                             <li>A시</li>
                     </div>
-
+                </ul>
+                <ul>
                     <div id="tab2" class="tab_list">
                             <li>A시</li>
                             <li>A시</li>
                             <li>A시</li>
                             <li>A시</li>
                     </div>
-
+                </ul>
+                <ul>
                     <div id="tab3" class="tab_list">
                         <li>A시</li>
                         <li>A시</li>
@@ -53,13 +61,14 @@
             </div><!--
             --><div id="Contents" class="Contents">
 
-                    <!-- 등락폭  -->
-                    <div id="updown" class="updown"> 
+                    <!-- 등락  -->
+                    <div id="updown" class="updown">
+                        <h1>등락</h1> 
                     </div>
 
                     <!-- 지도 -->
                     <div id="map" class="map">
-                        <p>지도</p>
+                        <h1>지도</h1>
                     </div>
 
                 </div>
