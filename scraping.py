@@ -20,11 +20,11 @@ def push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, �
     data_dict = make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역)
 
     # Now, you can save this data to your database using the Django models
-    region = Region.objects.get_or_create(base_address=data_dict["base_address"], dong_name=data_dict["dong_name"], region_code=data_dict["region_code"])
+    region = Region(base_address=data_dict["base_address"], dong_name=data_dict["dong_name"], region_code=data_dict["region_code"])
     region.save()
-    real_estate = RealEstate.objects.get_or_create(region=region, estate_name=data_dict["estate_name"], exclusive_area=data_dict["exclusive_area"], year_of_construction=data_dict["year_of_construction"], floor=data_dict["floor"])
+    real_estate = RealEstate(region=region, estate_name=data_dict["estate_name"], exclusive_area=data_dict["exclusive_area"], year_of_construction=data_dict["year_of_construction"], floor=data_dict["floor"])
     real_estate.save()
-    real_estate_trade = RealEstateTrade.objects.create(real_estate=real_estate, trade_price=data_dict["trade_price"], trade_year=data_dict["trade_year"], trade_month=data_dict["trade_month"], trade_day=data_dict["trade_day"])
+    real_estate_trade = RealEstateTrade(real_estate=real_estate, trade_price=data_dict["trade_price"], trade_year=(data_dict["trade_year"]), trade_month=data_dict["trade_month"], trade_day=data_dict["trade_day"])
     real_estate_trade.save()
 
 def make_dict_result():
@@ -36,7 +36,7 @@ def make_dict_result():
 
     api_key_decode = requests.utils.unquote(encoding)
 
-    date_month = ['202308','202309','202310']
+    date_month = ['202310']
 
     result = []
 
@@ -47,18 +47,25 @@ def make_dict_result():
             soup = BeautifulSoup(response.text, 'xml')
             items = soup.find_all("item")
             for item in items:
-                거래금액 = getattr(item.find("거래금액"), 'text', None)
-                건축년도 = getattr(item.find("건축년도"), 'text', None)
-                년도 = getattr(item.find("년"), 'text', None)
-                법정동 = getattr(item.find("법정동"), 'text', None)
-                아파트 = getattr(item.find("아파트"), 'text', None)
-                월 = getattr(item.find("월"), 'text', None)
-                일 = getattr(item.find("일"), 'text', None)
-                전용면적 = getattr(item.find("전용면적"), 'text', None)
-                지번 = getattr(item.find("지번"), 'text', None)
-                층 = getattr(item.find("층"), 'text', None)
+                거래금액 = getattr(item.find("거래금액"), 'text', None).strip()
+                #print(거래금액)
+                거래금액 = int(거래금액.replace(",", "").strip())
+                건축년도 = int(getattr(item.find("건축년도"), 'text', None).strip())
+                년도 = int(getattr(item.find("년"), 'text', None).strip())
+                법정동 = getattr(item.find("법정동"), 'text', None).strip()
+                아파트 = getattr(item.find("아파트"), 'text', None).strip()
+                월 = int(getattr(item.find("월"), 'text', None).strip())
+                일 = int(getattr(item.find("일"), 'text', None).strip())
+                전용면적 = float(getattr(item.find("전용면적"), 'text', None).strip())
+
+                지번 = getattr(item.find("지번"), 'text', None).strip()
+                층 = int(getattr(item.find("층"), 'text', None).strip())
                 지역코드 = getattr(item.find("지역코드"), 'text', None)
                 지역 = local_code[지역코드]
+                지역코드 = int(지역코드)
                 result.append(make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역))
+                #print(result)
                 push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역)
     return result
+
+make_dict_result()
