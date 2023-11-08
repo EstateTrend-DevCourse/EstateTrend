@@ -5,8 +5,8 @@ import pandas as pd
 
 # Create your views here.
 def KoreaMap(request):
-    state_geo = 'korean_map\TL_SCCO_SIG_WGS84.json'
-    state_unemployment = 'korean_map/Total_People_2018.csv'
+    state_geo = 'map_visual/TL_SCCO_SIG_WGS84.json'
+    state_unemployment = 'map_visual/Total_People_2018.csv'
     state_data = pd.read_csv(state_unemployment, encoding = 'euc-kr')
     
     korea_map = folium.Map(location=[38, 128], zoom_start=8)
@@ -30,7 +30,7 @@ def KoreaMap(request):
 
     korea_map = korea_map._repr_html_()
     context = {'korea_map': korea_map}
-    return render(request, '../templates/korea_map.html', context)
+    return render(request, '../templates/map_visual/korea_map.html', context)
 
 def SeoulMap(request):
     seoul_geo = 'https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json'
@@ -70,4 +70,29 @@ def SeoulMap(request):
     #지도를 템플릿에 삽입하기위해 iframe이 있는 문자열로 반환
     map = map._repr_html_()
     context = {'my_map': map}
-    return render(request, '../templates/seoul_map.html', context)
+    return render(request, '../templates/map_visual/seoul_map.html', context)
+
+def dong_maps(request):
+    path = 'map_visual/HangJeongDong_ver20230701.json'
+    geo = json.load(open(path, encoding = 'utf-8'))
+    
+    detail_map = folium.Map(location=[37.566345, 126.977893], zoom_start=12)
+    
+    
+    folium.Choropleth(
+        geo, name = 'dong_map'
+    ).add_to(detail_map)
+    
+    #popup event
+    folium.GeoJson(
+        data = geo,
+        name = 'dong_map_info',
+        popup=folium.GeoJsonPopup(
+            fields=['sidonm','adm_nm', 'sgg', 'adm_cd'],
+            aliases=['시이름','지역명', '시코드번호', '지역코드번호']
+        )
+    ).add_to(detail_map)
+    
+    detail_map = detail_map._repr_html_()
+    context = {'detail_map': detail_map}
+    return render(request, '../templates/map_visual/dong_map.html', context)
