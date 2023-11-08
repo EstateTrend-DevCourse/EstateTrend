@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
 
+        <meta charset="utf-8">      <!--한글 에러 방지-->
+
+        <title>주택 매매 가격 동향</title>
+        <link href="style.css" rel="stylesheet" type="text/css"/>
+    
+        </style>
+    </head>
+    
+
+    <body>
+        <div id="logo" class="Logo">
+            <p>주택 매매 가격 동향</p>
+        </div>            
+
+        <main>
+        
+            <!-- 지역 선택 -->
+            <div id="SideBar" class="SideBar">
+
+                <h1>지역 선택</h1>
+                {% if regions %}
+                <h2>
+                    <ul class="tabs">
+                        {% for region in regions %}
+                        <li class="tab" data-tab="tab1">
+                            <a href="{% url 'trades:tempaltes:detail' region.id %}">{{region.dong_name}}</a>
+                        </li>
+                        
+                        {% endfor %}
+                    </ul>
+                    
+                    {% else %}
+                    <p>no regions</p>
+                    {% endif %}
+                </h2>
+                
+                <ul>
+                    <div id="tab1" class="tab_list">
+                            <li>A시</li>
+                            <li>A시</li>
+                            <li>A시</li>
+                            <li>A시</li>
+                    </div>
+                </ul>
+
+            </div><!--
+            --><div id="Contents" class="Contents">
+
+                    <!-- 등락  -->
+                    <div id="updown" class="updown">
+                        <h1>등락</h1> 
+                    </div>
+
+                    <!-- 지도 -->
+                    <div id="map" class="map">
+                        <h1>지도</h1>
+                    </div>
+
+                </div>
+
+        </main>
+    </body>
+</html>
