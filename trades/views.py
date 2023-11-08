@@ -8,7 +8,7 @@ from .models import *
 def index(request):
     regions = Region.objects.all()
     context = {"regions": regions}
-    return render(request, "trades/index.html", context)
+    return render(request, "trades/main.html", context)
 
 
 def detail(request, region_id):
