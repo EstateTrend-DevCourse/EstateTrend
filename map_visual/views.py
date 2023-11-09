@@ -1,113 +1,118 @@
-from django.shortcuts import render
 import json
 import folium
 import pandas as pd
 
-
-# Create your views here.
-def KoreaMap(request):
-    path = "map_visual/TL_SCCO_SIG_WGS84.json"
-    state_geo = json.load(open(path, encoding="euc-kr"))
-    # state_geo = "map_visual/TL_SCCO_SIG_WGS84.json"
-    state_unemployment = "map_visual/Total_People_2018.csv"
-    state_data = pd.read_csv(state_unemployment, encoding="euc-kr")
-
-    korea_map = folium.Map(location=[38, 128], zoom_start=8)
-
-    korea_choro = folium.Choropleth(
-        geo_data=state_geo,  # GeoJSON file
-        name="korea-map",
-        data=state_data,  # DataFrame
-        # CSV 파일 첫번째 줄에서 지정한 내용
-        columns=["Code", "Population"],
-        # JSON지도와 CSV를 매칭할때 사용할 data
-        key_on="feature.properties.SIG_CD",
-        fill_color="YlGn",  # color
-        fill_opacity=0.7,  # 투명도
-        line_opacity=0.5,
-        legend_name="Population Rate (%)",
-    ).add_to(korea_map)
-
-    folium.LayerControl().add_to(korea_map)
-
-    korea_map = korea_map._repr_html_()
-    context = {"korea_map": korea_map}
-    return render(request, "map_visual/korea_map.html", context)
+sido_coordinate = {
+    "서울특별시": [37.5311, 126.9814],
+    "강원특별자치도": [37.6911, 127.8787],
+    "경기도": [37.6034, 127.1396],
+    "경상북도": [36.3509, 128.6874],
+    "경상남도": [35.8313, 128.6097],
+    "대구광역시": [35.8313, 128.6097],
+    "광주광역시": [35.1502, 126.8565],
+    "대전광역시": [36.3503, 127.3662],
+    "부산광역시": [35.2048, 129.0835],
+    "세종특별자치시": [36.4801, 127.2889],
+    "울산광역시": [35.5664, 129.3190],
+    "인천광역시": [37.4753, 126.6369],
+    "전라남도": [35.0675, 126.9940],
+    "전라북도": [35.8242, 127.1489],
+    "제주특별자치도": [33.4996, 126.5312],
+    "충청남도": [36.4548, 126.7946],
+    "충청북도": [36.8109, 127.7952],
+}
 
 
-def SeoulMap(request):
-    seoul_geo = "https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json"
+def SidoMap():
+    sido_path = "map_visual/geojson/si_do/HangJeongSiDo_ver20230701.json"
+    sido_geo = json.load(open(sido_path, encoding="utf-8"))
 
-    # 임시데이터
-    raw_data = [
-        ["강동구", 9912224],
-        ["송파구", 8203005],
-        ["강남구", 5236343],
-        ["서초구", 7718434],
-        ["관악구", 2671968],
-        ["동작구", 6474852],
-        ["영등포구", 7006927],
-        ["금천구", 1163259],
-        ["구로구", 2465648],
-        ["강서구", 9770965],
-        ["양천구", 6186435],
-        ["마포구", 28175066],
-        ["서대문구", 6190094],
-        ["은평구", 6367052],
-        ["노원구", 6512900],
-        ["도봉구", 1675107],
-        ["강북구", 8406888],
-        ["성북구", 1558420],
-        ["중랑구", 6268679],
-        ["동대문구", 7288276],
-        ["광진구", 129881],
-        ["성동구", 1754089],
-        ["용산구", 39018545],
-        ["중구", 10321901],
-        ["종로구", 10048909],
-    ]
+    sido_map = folium.Map(location=[37.541, 126.986], zoom_start=7)
 
-    data = pd.DataFrame(raw_data, columns=["name", "value"])
+    folium.Choropleth(sido_geo, name="sido-map").add_to(sido_map)
 
-    map = folium.Map(location=[37.566345, 126.977893], zoom_start=12)
-    choro = folium.Choropleth(
-        seoul_geo,
-        name="지역구",
+    folium.GeoJson(
+        data=sido_geo,
+        name="sido_info",
+        # click
+        popup=folium.GeoJsonPopup(
+            fields=["sidonm", "sido_cd"], aliases=["시이름", "코드번호"]
+        ),
+        tooltip=folium.GeoJsonTooltip(
+            fields=["sidonm"], aliases=["시이름"], style=("font-size : 15px")
+        ),
+    ).add_to(sido_map)
+
+    sido_map = sido_map._repr_html_()
+    return sido_map
+
+
+def SigugunMap(sido_name):
+    sigugun_path = f"map_visual/geojson/si_gu_gun/{sido_name}.json"
+    sigugun_geo = json.load(open(sigugun_path, encoding="utf-8"))
+
+    data_csv = "map_visual/Total_People_2018.csv"
+    data = pd.read_csv(data_csv, encoding="euc-kr")
+
+    sigugun_map = folium.Map(
+        location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
+        zoom_start=11,
+    )
+
+    sigugun_boundary = folium.Choropleth(
+        sigugun_geo,
+        name="sigugun-map",
         data=data,
-        columns=["name", "value"],  # columns[1] = 시각화 하고자 하는 변수
-        key_on="feature.properties.name",  # columns[0]과 매핑되는 값.(String값)
+        columns=["Code", "Population"],
+        key_on="feature.properties.sgg_cd",
         fill_color="OrRd",  # 시각화할 색상
         fill_opacity=0.7,  # 색 투명도
         line_opacity=0.2,  # 경계선 투명도
-        legend_name="임시데이터",  # 색상 범주 이름
-    ).add_to(map)
+        legend_name="2018년 인구수",  # 색상 범주 이름
+    ).add_to(sigugun_map)
 
-    choro.geojson.add_child(folium.features.GeoJsonTooltip(["name"], labels=False))
-
-    # 지도를 템플릿에 삽입하기위해 iframe이 있는 문자열로 반환
-    map = map._repr_html_()
-    context = {"my_map": map}
-    return render(request, "map_visual/seoul_map.html", context)
-
-
-def dong_maps(request):
-    path = "map_visual/HangJeongDong_ver20230701.json"
-    geo = json.load(open(path, encoding="utf-8"))
-
-    detail_map = folium.Map(location=[37.566345, 126.977893], zoom_start=12)
-
-    folium.Choropleth(geo, name="dong_map").add_to(detail_map)
-
-    # popup event
     folium.GeoJson(
-        data=geo,
-        name="dong_map_info",
-        popup=folium.GeoJsonPopup(
-            fields=["sidonm", "adm_nm", "sgg", "adm_cd"],
-            aliases=["시이름", "지역명", "시코드번호", "지역코드번호"],
+        data=sigugun_geo,
+        name="sigugun_info",
+        # click
+        popup=folium.GeoJsonPopup(fields=["sgg_nm", "sgg_cd"], aliases=["구이름", "코드번호"]),
+        tooltip=folium.GeoJsonTooltip(
+            fields=["sido_nm", "sido_cd"], aliases=["시이름", "코드번호"]
         ),
-    ).add_to(detail_map)
+    ).add_to(sigugun_map)
 
-    detail_map = detail_map._repr_html_()
-    context = {"detail_map": detail_map}
-    return render(request, "map_visual/dong_map.html", context)
+    sigugun_boundary.geojson.zoom_on_click = False
+    folium.LayerControl().add_to(sigugun_map)
+
+    sigugun_map = sigugun_map._repr_html_()
+    return sigugun_map
+
+
+def DongMap(sido_name, sigugun_name):
+    dong_path = f"map_visual/geojson/dong/{sido_name}/{sigugun_name}.json"
+    dong_geo = json.load(open(dong_path, encoding="utf-8"))
+
+    dong_map = folium.Map(
+        location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
+        zoom_start=11,
+    )
+    dong_boundary = folium.Choropleth(dong_geo, name="dong-map").add_to(dong_map)
+
+    folium.GeoJson(
+        data=dong_geo,
+        name="dong_info",
+        # click
+        popup=folium.GeoJsonPopup(
+            fields=["adm_nm", "adm_cd2"], aliases=["지역명", "코드번호"]
+        ),
+        tooltip=folium.GeoJsonTooltip(
+            fields=["sidonm", "sido", "sggnm", "sgg"],
+            aliases=["시이름", "코드번호", "구이름", "코드번호"],
+        ),
+    ).add_to(dong_map)
+
+    dong_boundary.geojson.zoom_on_click = False
+    folium.LayerControl().add_to(dong_map)
+
+    dong_map = dong_map._repr_html_()
+    return dong_map
