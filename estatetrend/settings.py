@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "trades.apps.TradesConfig",
-    "map_visual.apps.MapVisualConfig",
+    "trades",
+    "map_visual",
 ]
 
 MIDDLEWARE = [
