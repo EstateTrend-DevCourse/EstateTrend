@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Region(models.Model):
+
     base_address = models.CharField(max_length=200)  # 지번
     si_do_name = models.CharField(max_length=200, default="")  # 시/도 이름
     gu_gun_name = models.CharField(max_length=200, default="")  # 구/군 이름
@@ -14,6 +15,7 @@ class Region(models.Model):
 
 
 class RealEstate(models.Model):
+
     region = models.ForeignKey(
         Region, related_name="realestates", on_delete=models.CASCADE
     )
@@ -27,6 +29,7 @@ class RealEstate(models.Model):
 
 
 class RealEstateTrade(models.Model):
+
     real_estate = models.ForeignKey(
         RealEstate, related_name="realestatetrades", on_delete=models.CASCADE
     )
