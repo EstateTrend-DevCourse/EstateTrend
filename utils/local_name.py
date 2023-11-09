@@ -263,4 +263,3 @@ local_name_2 = {
         "서귀포시",
     ],
 }
-local_name_3 = {}
