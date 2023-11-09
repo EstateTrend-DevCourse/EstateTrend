@@ -4,28 +4,111 @@ from django.urls import reverse
 from .models import *
 from datetime import datetime
 from utils.local_name import *
+from utils.local_name_dong import local_name_3
 from map_visual.views import _render_map
 
 
 # Create your views here.
 def index(request):
     # regions = Region.objects.all()
-
-    if "sido_nm" in request.GET:
+    raw_data = {}
+    if "gugun_nm" in request.GET:
+        sido_nm = request.GET["sido_nm"]
+        gugun_nm = request.GET["gugun_nm"]
+        dong_of_gugun = local_name_3[f"{sido_nm} {gugun_nm}"]
+        context = {"regions": dong_of_gugun, "sido": sido_nm, "gugun": gugun_nm}
+        trades = _get_gugun_trades(2023, 9, sido_nm, gugun_nm)
+        for dong_nm in dong_of_gugun:
+            raw_data[dong_nm] = trades.filter(
+                real_estate__region__dong_name=dong_nm
+            ).count()
+    elif "sido_nm" in request.GET:
         sido_nm = request.GET["sido_nm"]  # url query에서 시/도 명 가져와서 저장
-        region_sido = local_name_2[sido_nm]
-        context = {"regions": region_sido, "sido": sido_nm}  # context로 넘김
-        if "gugun_nm" in request.GET:
-            gugun_nm = request.GET["gugun_nm"]
-
-            return HttpResponse("sido_nm gugun_nm")
-
+        gugun_of_sido = local_name_2[sido_nm]
+        context = {"regions": gugun_of_sido, "sido": sido_nm}  # context로 넘김
+        trades = _get_sido_trades(2023, 9, sido_nm)
+        for gugun_nm in gugun_of_sido:
+            raw_data[gugun_nm] = trades.filter(
+                real_estate__region__gu_gun_name=gugun_nm
+            ).count()
     else:
         region_all = local_name_1["전국"]
         context = {"regions": region_all}
+        trades = _get_all_trades(2023, 9)
+        for sido_nm in region_all:
+            raw_data[sido_nm] = trades.filter(
+                real_estate__region__si_do_name=sido_nm
+            ).count()
 
+    print(raw_data)
+    context.update(_get_context(trades))
     context["map"] = _render_map()
+
     return render(request, "trades/index.html", context)
+
+
+def _get_all_trades(cur_year, cur_month):
+    monthly_trades = RealEstateTrade.objects.filter(
+        trade_year=cur_year,
+        trade_month=cur_month,
+    )
+    return monthly_trades
+
+
+def _get_sido_trades(cur_year, cur_month, sido_nm):
+    monthly_trades = RealEstateTrade.objects.filter(
+        trade_year=cur_year,
+        trade_month=cur_month,
+        real_estate__region__si_do_name=sido_nm,
+    )
+    return monthly_trades
+
+
+def _get_gugun_trades(cur_year, cur_month, sido_nm, gugun_nm):
+    monthly_trades = RealEstateTrade.objects.filter(
+        trade_year=cur_year,
+        trade_month=cur_month,
+        real_estate__region__si_do_name=sido_nm,
+        real_estate__region__gu_gun_name=gugun_nm,
+    )
+    return monthly_trades
+
+
+def _get_dong_trades(cur_year, cur_month, sido_nm, gugun_nm, dong_nm):
+    monthly_trades = RealEstateTrade.objects.filter(
+        trade_year=cur_year,
+        trade_month=cur_month,
+        real_estate__region__si_do_name=sido_nm,
+        real_estate__region__gu_gun_name=gugun_nm,
+        real_estate__region__dong_name=dong_nm,
+    )
+    return monthly_trades
+
+
+def _get_context(trades):
+    context = {}
+    average_price, highest_price, lowest_price = 0, 0, 0
+    trading_volume = trades.count()
+    total_price = trades.aggregate(total_price=models.Sum("trade_price"))["total_price"]
+    if trading_volume > 0:
+        average_price = total_price / trading_volume
+
+    trades = trades.order_by("trade_price")
+
+    highest_price_trade = trades.last()
+    if highest_price_trade:
+        highest_price = highest_price_trade.trade_price
+
+    lowest_price_trade = trades.first()
+    if lowest_price_trade:
+        lowest_price = lowest_price_trade.trade_price
+
+    return {
+        "trading_volume": trading_volume,
+        "average_price": average_price,
+        "highest_price": highest_price,
+        "lowest_price": lowest_price,
+    }
 
 
 def detail(request, region_id):
