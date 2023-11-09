@@ -63,4 +63,4 @@ def detail(request, region_id):
         "lowest_price": lowest_price,
         "highest_price": highest_price,
     }
-    return render(request, "trades/detail.html", context)
+    return render(request, "trades/index.html", context)
