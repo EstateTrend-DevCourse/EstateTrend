@@ -1,22 +1,18 @@
 <h1>{{region.dong_name}}의 집값 추이는?</h1>
 
 <ul>
+	{% if realestates %}
 	<li>
-		<p>{{biggest_increase}}은 00%로 가장 많이 오른 지역입니다.</p>
-		<p>{{biggest_decrease}}은 00%로 가장 많이 떨어진 지역입니다.</p>
+		{% for re in realestates%}
+		<p>{{re}}</p>
+		<p>{{trading_volume}}</p>
+		<p>{{average_price}}</p>
+		<p>{{lowest_price}}</p>
+		<p>{{highest_price}}</p>
 
-		{% if estates %}
-		<ul>
-			{% for estate in estates %}
-			<li>
-				<a href="{% url 'trades:detail-trade' region.id estate.id %}"
-					>{{estate.estate_name}}</a
-				>
-			</li>
-			{% endfor %}
-		</ul>
-		{% else %}
-		<p>no estates.</p>
-		{% endif %}
+		{% endfor %}
 	</li>
+	{% else %}
+	<p>no real estaes</p>
+	{% endif %}
 </ul>

@@ -291,6 +291,8 @@ def push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, �
 
     # Now, you can save this data to your database using the Django models
     region = Region(
+        si_do_name="sample시",
+        gu_gun_name="sample구",  # 구/군 이름
         base_address=data_dict["base_address"],
         dong_name=data_dict["dong_name"],
         region_code=data_dict["region_code"],
