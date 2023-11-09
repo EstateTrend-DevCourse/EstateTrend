@@ -251,9 +251,7 @@ local_code = {
     "51830": "강원특별자치도 양양군",
 }
 
-local_code2 = { "11110": "서울특별시 종로구", "11140": "서울특별시 중구",}
-
-
+local_code2 = { "11110": "서울특별시 종로구", "11140": "서울특별시 중구" }
 
 import os
 import sys
@@ -270,7 +268,7 @@ django.setup()
 
 import requests
 from bs4 import BeautifulSoup
-from EstateTrend.trades.models import Region, RealEstate, RealEstateTrade
+from trades.models import Region, RealEstate, RealEstateTrade
 from collections import defaultdict
 
 repeatCheck_rg = defaultdict(int)
@@ -345,7 +343,7 @@ def make_dict_result():
     result = []
 
     for month in date_month:
-        for code in local_code.keys():
+        for code in local_code2.keys():
             params = {'serviceKey': api_key_decode, 'LAWD_CD': code, 'DEAL_YMD': month}
             response = requests.get(url, params=params)
             soup = BeautifulSoup(response.text, 'xml')

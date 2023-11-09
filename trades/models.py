@@ -16,7 +16,6 @@ class Region(models.Model):
 
 class RealEstate(models.Model):
 
-
     region = models.ForeignKey(
         Region, related_name="realestates", on_delete=models.CASCADE
     )
@@ -30,7 +29,6 @@ class RealEstate(models.Model):
 
 
 class RealEstateTrade(models.Model):
-
 
     real_estate = models.ForeignKey(
         RealEstate, related_name="realestatetrades", on_delete=models.CASCADE
