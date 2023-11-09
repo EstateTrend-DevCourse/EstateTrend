@@ -1,69 +1,67 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
+	<head>
+		<meta charset="utf-8" />
+		<!--한글 에러 방지-->
 
-        <meta charset="utf-8">      <!--한글 에러 방지-->
+		<title>주택 매매 가격 동향</title>
 
-        <title>주택 매매 가격 동향</title>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
-    </head>
-    
+		<link href="style.css" rel="stylesheet" type="text/css" />
+	</head>
 
-    <body>
-        <div id="logo" class="Logo">
-            <p>주택 매매 가격 동향</p>
-        </div>            
+	<body>
+		<header>
+			<!-- 제목 -->
+			<div id="Logo" class="Logo">
+				<h1>주택 실거래 가격</h1>
+				<h3>우리 동네에서 부동산 거래 변화가 가장 큰 곳은 어디일까?</h3>
+			</div>
+		</header>
 
-        <main>
-        
-            <!-- 지역 선택 -->
-            <div id="SideBar" class="SideBar">
+		<main>
+			<!-- 지역 선택 -->
+			<div id="SideBar" class="SideBar">
+				<h2>지역 선택</h2>
+				<h5>
+					{% if regions %}
+					<ul class="tabs">
+						{% for region in regions %}
+						<li class="tab">
+							<a href="{% url 'trades:detail' region.id %}">
+								{{region.dong_name}}
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
 
-                <h1>지역 선택</h1>
-                <h2>
-                    {% if regions %}
-                
-                    <ul class="tabs">
-                        {% for region in regions %}
-                        <li class="tab" data-tab="tab1">
-                            <a href="{% url 'trades:templates:detail1' region.id %}">{{region.dong_name}}</a>
-                        </li>
-                        
-                        {% endfor %}
-                    </ul>
-                    
-                    {% else %}
-                    <p>no regions</p>
-                    {% endif %}
-                </h2>
-                
-                <h3>
-                    <ul>
-                        <div id="tab1" class="tab_list">
-                                <li>A시</li>
-                                <li>A시</li>
-                                <li>A시</li>
-                                <li>A시</li>
-                        </div>
-                    </ul>    
-                </h3>
+					{% else %}
+					<p>no regions</p>
+					{% endif %}
+				</h5>
 
-            </div><!--
+				<h3>
+					<ul>
+						<div id="tab1" class="tab_list"></div>
+					</ul>
+				</h3>
+			</div>
+			<!--
 
-            --><div id="Contents" class="Contents">
+                내용
+            -->
+			<div id="Contents" class="Contents">
+				<!-- 등락  -->
+				<div id="updown" class="updown">
+					<h1>등락</h1>
+					<li>{{ context.region }}</li>
+				</div>
 
-                    <!-- 등락  -->
-                    <div id="updown" class="updown">
-                        <h1>등락</h1> 
-                    </div>
-
-                    <!-- 지도 -->
-                    <div id="map" class="map">
-                        <h1>지도</h1>
-                    </div>
-
-                </div>
-
-        </main>
-    </body>
+				<!-- 지도 -->
+				<div id="map" class="map">
+					<h1>지도</h1>
+				</div>
+			</div>
+		</main>
+	</body>
 </html>

@@ -251,26 +251,20 @@ local_code = {
     "51830": "강원특별자치도 양양군",
 }
 
-local_code2 = { "11110": "서울특별시 종로구", "11140": "서울특별시 중구",}
-
-
+local_code2 = { "11110": "서울특별시 종로구", "11140": "서울특별시 중구" }
 
 import os
-import sys
+
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", "estatetrend.settings"
+)  # my project name
+
 import django
-
-# 현재 스크립트의 디렉토리를 기준으로 프로젝트 디렉토리를 추가
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_dir = os.path.dirname(current_dir)
-sys.path.append(project_dir)
-
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "estatetrend.settings")
 django.setup()
 
 import requests
 from bs4 import BeautifulSoup
-from EstateTrend.trades.models import Region, RealEstate, RealEstateTrade
+from trades.models import Region, RealEstate, RealEstateTrade
 from collections import defaultdict
 
 repeatCheck_rg = defaultdict(int)
@@ -345,7 +339,7 @@ def make_dict_result():
     result = []
 
     for month in date_month:
-        for code in local_code.keys():
+        for code in local_code2.keys():
             params = {'serviceKey': api_key_decode, 'LAWD_CD': code, 'DEAL_YMD': month}
             response = requests.get(url, params=params)
             soup = BeautifulSoup(response.text, 'xml')

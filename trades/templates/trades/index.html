@@ -1,29 +1,19 @@
-<!DOCTYPE html>
-<head></head>
-<body>
-	<h1>주택 실거래 가격</h1>
-	<h3>우리 동네에서 실거래가 변화가 가장 큰 곳은 어디일까?</h3>
+{% extends 'trades/main.html' %}
 
-	<div class="search-dropdown">
-		<p>드롭다운 검색창 위치</p>
-	</div>
-	<div class="map">
-		<p>지도 위치</p>
-	</div>
-	<div>
-		<p>지역 리스트 위치</p>
-		{% if regions %}
-		<ul>
-			{% for region in regions %}
-			<li>
-				<a href="{% url 'trades:detail' region.id %}"
-					>{{region.dong_name}}</a
-				>
-			</li>
-			{% endfor %}
-		</ul>
-		{%else%}
-		<p>no regions</p>
-		{%endif%}
-	</div>
-</body>
+<!DOCTYPE html>
+	<head>
+		{% block title %}{% endblock %}
+		<link href="style.css" rel="stylesheet" type="text/css"/>
+	</head>
+
+	<body>
+		{% block Logo %}{% endblock %}
+
+		{% block SideBar %}{% endblock %}
+		
+		{% block Contents %}
+			{% block updown %}{% endblock %}
+			{% block map %}{% endblock %}
+		{% endblock %}
+	</body>
+</html>
