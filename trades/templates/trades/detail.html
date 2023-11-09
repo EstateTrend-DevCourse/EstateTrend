@@ -3,13 +3,12 @@
 <ul>
 	{% if realestates %}
 	<li>
-		{% for re in realestates%}
-		<p>{{re}}</p>
-		<p>{{trading_volume}}</p>
-		<p>{{average_price}}</p>
-		<p>{{lowest_price}}</p>
-		<p>{{highest_price}}</p>
-
+		<p>trading volume : {{trading_volume}}</p>
+		<p>average price : {{average_price}}</p>
+		<p>lowest_price : {{lowest_price}}</p>
+		<p>highest_price : {{highest_price}}</p>
+		{% for t in trades%}
+		<p>{{t}}</p>
 		{% endfor %}
 	</li>
 	{% else %}
