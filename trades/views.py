@@ -5,7 +5,7 @@ from .models import *
 from datetime import datetime
 from utils.local_name import *
 from utils.local_name_dong import local_name_3
-from map_visual.views import _render_map
+from map_visual.views import *
 
 
 # Create your views here.
@@ -42,7 +42,7 @@ def index(request):
 
     print(raw_data)
     context.update(_get_context(trades))
-    context["map"] = _render_map()
+    context["map"] = SidoMap()
 
     return render(request, "trades/index.html", context)
 
