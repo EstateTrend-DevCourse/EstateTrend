@@ -9,7 +9,7 @@ local_code = {
     "11290": "서울특별시 성북구",
     "11305": "서울특별시 강북구",
     "11320": "서울특별시 도봉구",
-    "11350": "서울 특별시 노원구",
+    "11350": "서울특별시 노원구",
     "11380": "서울특별시 은평구",
     "11410": "서울특별시 서대문구",
     "11440": "서울특별시 마포구",
@@ -19,7 +19,7 @@ local_code = {
     "11545": "서울특별시 금천구",
     "11560": "서울특별시 영등포구",
     "11590": "서울특별시 동작구",
-    "11620": "서울특별시 관악 구",
+    "11620": "서울특별시 관악구",
     "11650": "서울특별시 서초구",
     "11680": "서울특별시 강남구",
     "11710": "서울특별시 송파구",
@@ -29,7 +29,7 @@ local_code = {
     "26170": "부산광역시 동구",
     "26200": "부산광역시 영도구",
     "26230": "부산광역시 부산진구",
-    "26260": " 부산광역시 동래구",
+    "26260": "부산광역시 동래구",
     "26290": "부산광역시 남구",
     "26320": "부산광역시 북구",
     "26350": "부산광역시 해운대구",
@@ -45,7 +45,7 @@ local_code = {
     "27170": "대구광역시 서구",
     "27200": "대구광역시 남구",
     "27230": "대구광역시 북구",
-    "27260": "대구광 역시 수성구",
+    "27260": "대구광역시 수성구",
     "27290": "대구광역시 달서구",
     "27710": "대구광역시 달성군",
     "27720": "대구광역시 군위군",
@@ -87,7 +87,7 @@ local_code = {
     "41173": "경기도 안양시 동안구",
     "41190": "경기도 부천시",
     "41210": "경기도 광명시",
-    "41220": "경기도  평택시",
+    "41220": "경기도 평택시",
     "41250": "경기도 동두천시",
     "41271": "경기도 안산시 상록구",
     "41273": "경기도 안산시 단원구",
@@ -146,7 +146,7 @@ local_code = {
     "44790": "충청남도 청양군",
     "44800": "충청남도 홍성군",
     "44810": "충청남도 예산군",
-    "44825": " 충청남도 태안군",
+    "44825": "충청남도 태안군",
     "45111": "전라북도 전주시 완산구",
     "45113": "전라북도 전주시 덕진구",
     "45130": "전라북도 군산시",
@@ -178,7 +178,7 @@ local_code = {
     "46820": "전라남도 해남군",
     "46830": "전라남도 영암군",
     "46840": "전라남도 무안군",
-    "46860": "전라남도 함평 군",
+    "46860": "전라남도 함평군",
     "46870": "전라남도 영광군",
     "46880": "전라남도 장성군",
     "46890": "전라남도 완도군",
@@ -210,7 +210,7 @@ local_code = {
     "48121": "경상남도 창원시 의창구",
     "48123": "경상남도 창원시 성산구",
     "48125": "경상남도 창원시 마산합포구",
-    "48127": "경상남도  창원시 마산회원구",
+    "48127": "경상남도 창원시 마산회원구",
     "48129": "경상남도 창원시 진해구",
     "48170": "경상남도 진주시",
     "48220": "경상남도 통영시",
@@ -251,6 +251,8 @@ local_code = {
     "51830": "강원특별자치도 양양군",
 }
 
+#local_code2 = { "11110": "서울특별시 종로구", "11140": "서울특별시 중구" }
+
 import os
 
 os.environ.setdefault(
@@ -258,13 +260,15 @@ os.environ.setdefault(
 )  # my project name
 
 import django
-
 django.setup()
 
 import requests
 from bs4 import BeautifulSoup
-from trades.models import Region, RealEstate, RealEstateTrade
+from ..trades.models import Region, RealEstate, RealEstateTrade
+from collections import defaultdict
 
+repeatCheck_rg = defaultdict(int)
+repeatCheck_rs = defaultdict(int)
 
 def make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역):
     dict = {
@@ -289,69 +293,84 @@ def push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, �
     # First, create a dictionary with the provided data
     data_dict = make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역)
 
+    region = None
     # Now, you can save this data to your database using the Django models
+
     region = Region(
         base_address=data_dict["base_address"],
+        #si_do_name=local_code2[지역코드],
+        si_do_name = local_code[str(지역코드)].split()[0],
+        gu_gun_name = ' '.join(local_code[str(지역코드)].split()[1:]),
         dong_name=data_dict["dong_name"],
-        region_code=data_dict["region_code"],
-    )
+        region_code=data_dict["region_code"])
     region.save()
+    repeatCheck_rg[str(지번) + 법정동] += 1
+
     real_estate = RealEstate(
         region=region,
         estate_name=data_dict["estate_name"],
         exclusive_area=data_dict["exclusive_area"],
         year_of_construction=data_dict["year_of_construction"],
-        floor=data_dict["floor"],
-    )
+        floor=data_dict["floor"])
     real_estate.save()
+    repeatCheck_rs[아파트 + str(전용면적) + str(층)] += 1
+
     real_estate_trade = RealEstateTrade(
         real_estate=real_estate,
         trade_price=data_dict["trade_price"],
         trade_year=(data_dict["trade_year"]),
         trade_month=data_dict["trade_month"],
-        trade_day=data_dict["trade_day"],
-    )
+        trade_day=data_dict["trade_day"])
     real_estate_trade.save()
 
+    if repeatCheck_rg[str(지번) + 법정동] >= 2:
+        region.delete()
+    else:
+        repeatCheck_rg[str(지번) + 법정동] += 1
 
+    if repeatCheck_rs[아파트 + str(전용면적) + str(층)] >= 2:
+        real_estate.delete()
+    else:
+        repeatCheck_rs[아파트 + str(전용면적) + str(층)] += 1
 def make_dict_result():
+
     url = "http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade"
 
-    encoding = "9IyndkiMrrzo5eLkP%2BI%2FsKhMYeg0jb8hNwqpdPHdeRKS5WuCsdT%2FbA8urOBesACx9E9cmdhLVs9sDvAFiyVlsA%3D%3D"
-    decoding = "9IyndkiMrrzo5eLkP+I/sKhMYeg0jb8hNwqpdPHdeRKS5WuCsdT/bA8urOBesACx9E9cmdhLVs9sDvAFiyVlsA=="
+    encoding = "O9YLfGdeRwmJITv50o9b2%2BVvgzNxJ%2FHL4C33nn3%2BO59eXlvNm%2BsqAC3UY%2BF1UmTvhc%2FA1LgkfOtYRMT%2BF1i9zQ%3D%3D"
+    decoding = "O9YLfGdeRwmJITv50o9b2+VvgzNxJ/HL4C33nn3+O59eXlvNm+sqAC3UY+F1UmTvhc/A1LgkfOtYRMT+F1i9zQ=="
 
     api_key_decode = requests.utils.unquote(encoding)
 
-    date_month = ["202310"]
+    date_month = ['202310']
 
     result = []
 
     for month in date_month:
         for code in local_code.keys():
-            params = {"serviceKey": api_key_decode, "LAWD_CD": code, "DEAL_YMD": month}
+            params = {'serviceKey': api_key_decode, 'LAWD_CD': code, 'DEAL_YMD': month}
             response = requests.get(url, params=params)
-            soup = BeautifulSoup(response.text, "xml")
+            soup = BeautifulSoup(response.text, 'xml')
             items = soup.find_all("item")
             for item in items:
-                거래금액 = getattr(item.find("거래금액"), "text", None).strip()
-                print(거래금액)
+                거래금액 = getattr(item.find("거래금액"), 'text', None).strip()
+                #print(거래금액)
                 거래금액 = int(거래금액.replace(",", "").strip())
-                건축년도 = int(getattr(item.find("건축년도"), "text", None).strip())
-                년도 = int(getattr(item.find("년"), "text", None).strip())
-                법정동 = getattr(item.find("법정동"), "text", None).strip()
-                아파트 = getattr(item.find("아파트"), "text", None).strip()
-                월 = int(getattr(item.find("월"), "text", None).strip())
-                일 = int(getattr(item.find("일"), "text", None).strip())
-                전용면적 = float(getattr(item.find("전용면적"), "text", None).strip())
+                건축년도 = int(getattr(item.find("건축년도"), 'text', None).strip())
+                년도 = int(getattr(item.find("년"), 'text', None).strip())
+                법정동 = getattr(item.find("법정동"), 'text', None).strip()
+                아파트 = getattr(item.find("아파트"), 'text', None).strip()
+                월 = int(getattr(item.find("월"), 'text', None).strip())
+                일 = int(getattr(item.find("일"), 'text', None).strip())
+                전용면적 = float(getattr(item.find("전용면적"), 'text', None).strip())
 
-                지번 = getattr(item.find("지번"), "text", None).strip()
-                층 = int(getattr(item.find("층"), "text", None).strip())
-                지역코드 = getattr(item.find("지역코드"), "text", None)
+                지번 = getattr(item.find("지번"), 'text', None).strip()
+                층 = int(getattr(item.find("층"), 'text', None).strip())
+                지역코드 = getattr(item.find("지역코드"), 'text', None)
                 지역 = local_code[지역코드]
                 지역코드 = int(지역코드)
-                result.append(
-                    make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역)
-                )
-                # print(result)
+                result.append(make_dict(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역))
+                #print(result)
                 push_model(거래금액, 건축년도, 년도, 법정동, 아파트, 월, 일, 전용면적, 지번, 층, 지역코드, 지역)
     return result
+
+make_dict_result()
