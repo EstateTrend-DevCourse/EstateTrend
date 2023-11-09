@@ -3,13 +3,27 @@ from django.http import HttpResponse
 from django.urls import reverse
 from .models import *
 from datetime import datetime
+from utils.local_name import *
 
 
 # Create your views here.
 def index(request):
-    regions = Region.objects.all()
-    context = {"regions": regions}
-    return render(request, "trades/main.html", context)
+    # regions = Region.objects.all()
+    region_all = local_name_1["전국"]
+    context = {"regions": region_all}
+
+    if "sido_nm" in request.GET:
+        sido_nm = request.GET["sido_nm"]  # url query에서 시/도 명 가져와서 저장
+        region_sido = local_name_2[sido_nm]
+        context = {"regions": region_sido, "sido": sido_nm}  # context로 넘김
+        if "gugun_nm" in request.GET:
+            gugun_nm = request.GET["gugun_nm"]
+
+            return HttpResponse("sido_nm gugun_nm")
+        else:
+            return render(request, "trades/main.html", context)
+    else:
+        return render(request, "trades/main.html", context)
 
 
 def detail(request, region_id):
