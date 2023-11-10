@@ -1,4 +1,5 @@
-{%load static%}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ko">
 	<head>
@@ -16,22 +17,33 @@
 
 	<body>
 		<header>
+			<button
+				class="Button"
+				type="button"
+				onclick="location.href='{% url 'trades:index' %}';"
+			>
+				Home
+			</button>
+
 			<!-- 제목 -->
 			<div id="Logo" class="Logo">
-				<h1>주택 실거래 가격</h1>
-				<h3>우리 동네에서 부동산 거래 변화가 가장 큰 곳은 어디일까?</h3>
+				<p>주택 매매 가격 동향</p>
+				<p id="SubLogo" class="SubLogo">
+					우리 동네에서 부동산 거래 변화가 가장 큰 곳은 어디일까?
+				</p>
 			</div>
 		</header>
 
 		<main>
 			<!-- 지역 선택 -->
-			<div id="SideBar" class="SideBar">
-				<h2>지역 선택</h2>
+			<aside id="SideBar" class="SideBar">
+				<h3 class="SectionName">지역 선택</h3>
+
 				<h5>
 					{% if regions %}
 					<ul class="tabs">
 						{% for region in regions %}
-						<li class="tab">
+						<li class="tab" style="list-style-type: none">
 							{%if sido%}
 							<a
 								href="{% url 'trades:index' %}?sido_nm={{sido}}&gugun_nm={{region}}"
@@ -54,25 +66,32 @@
 					<p>no regions</p>
 					{% endif %}
 				</h5>
-
-				<h3>
-					<ul>
-						<div id="tab1" class="tab_list"></div>
-					</ul>
-				</h3>
-			</div>
+			</aside>
 			<!--
 
                 내용
-            -->
-			<div id="Contents" class="Contents">
+		-->
+			<section id="Contents" class="Contents">
 				<!-- 등락  -->
 				<div id="updown" class="updown">
-					<h1>등락</h1>
-					<li>{{ trading_volume }}건의 거래</li>
-					<li>평균 {{ average_price }} 만원</li>
-					<li>가장 높은 매매가 : {{ highest_price }} 만원</li>
-					<li>가장 낮은 매매가 : {{ lowest_price }} 만원</li>
+					<h3 class="SectionName">거래 정보</h3>
+					<ul style="list-style-type: none">
+						<li>
+							<strong>매매 건수</strong> : {{ trading_volume }}건
+						</li>
+						<li>
+							<strong>평균 매매가</strong> : {{ average_price }}
+							만원
+						</li>
+						<li>
+							<strong>가장 높은 매매가</strong> : {{ highest_price
+							}} 만원
+						</li>
+						<li>
+							<strong>가장 낮은 매매가</strong> : {{ lowest_price
+							}} 만원
+						</li>
+					</ul>
 				</div>
 
 				<!-- 지도 -->
@@ -80,7 +99,11 @@
 					<h1>지도</h1>
 					{% include "map_visual/sido_map.html" with sido_map=map%}
 				</div>
-			</div>
+			</section>
 		</main>
+
+		<footer>
+			<p><em>프로그래머스 데브코스 데이터엔지니어링 프로젝트</em></p>
+		</footer>
 	</body>
 </html>
