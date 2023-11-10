@@ -1,7 +1,7 @@
+{% if region %}
 <h1>{{region.dong_name}}의 집값 추이는?</h1>
 
 <ul>
-	{% if realestates %}
 	<li>
 		<p>trading volume : {{trading_volume}}</p>
 		<p>average price : {{average_price}}</p>
@@ -11,7 +11,7 @@
 		<p>{{t}}</p>
 		{% endfor %}
 	</li>
-	{% else %}
-	<p>no real estaes</p>
-	{% endif %}
 </ul>
+{% else %}
+<p>no real estaes</p>
+{% endif %}

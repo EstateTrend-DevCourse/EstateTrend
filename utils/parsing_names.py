@@ -19,6 +19,8 @@ f.close()
 for l in lines:
     l_str = l.strip().split(" ")
     # print(l_str)
+    if l_str[-1][-1] == "리":
+        continue
     if len(l_str) >= 3:
         gg1 = " ".join(l_str[:2])
         if gg1 in local_name_3:
