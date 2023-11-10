@@ -18,31 +18,42 @@ def index(request):
         dong_of_gugun = local_name_3[f"{sido_nm} {gugun_nm}"]
         context = {"regions": dong_of_gugun, "sido": sido_nm, "gugun": gugun_nm}
         trades = _get_gugun_trades(2023, 9, sido_nm, gugun_nm)
+        raw_data["adm_nm"] = []
+        raw_data["trading_volume"] = []
         for dong_nm in dong_of_gugun:
-            raw_data[dong_nm] = trades.filter(
-                real_estate__region__dong_name=dong_nm
-            ).count()
+            raw_data["adm_nm"].append(f"{sido_nm} {gugun_nm} {dong_nm}")
+            raw_data["trading_volume"].append(
+                trades.filter(real_estate__region__dong_name=dong_nm).count()
+            )
+        context["map"] = DongMap(sido_nm, gugun_nm, raw_data)
     elif "sido_nm" in request.GET:
         sido_nm = request.GET["sido_nm"]  # url query에서 시/도 명 가져와서 저장
         gugun_of_sido = local_name_2[sido_nm]
         context = {"regions": gugun_of_sido, "sido": sido_nm}  # context로 넘김
         trades = _get_sido_trades(2023, 9, sido_nm)
+        raw_data["gugun_nm"] = []
+        raw_data["trading_volume"] = []
         for gugun_nm in gugun_of_sido:
-            raw_data[gugun_nm] = trades.filter(
-                real_estate__region__gu_gun_name=gugun_nm
-            ).count()
+            raw_data["gugun_nm"].append(gugun_nm)
+            raw_data["trading_volume"].append(
+                trades.filter(real_estate__region__gu_gun_name=gugun_nm).count()
+            )
+        context["map"] = SigugunMap(sido_nm, raw_data)
     else:
         region_all = local_name_1["전국"]
         context = {"regions": region_all}
         trades = _get_all_trades(2023, 9)
+        raw_data["sido_nm"] = []
+        raw_data["trading_volume"] = []
         for sido_nm in region_all:
-            raw_data[sido_nm] = trades.filter(
-                real_estate__region__si_do_name=sido_nm
-            ).count()
+            raw_data["sido_nm"].append(sido_nm)
+            raw_data["trading_volume"].append(
+                trades.filter(real_estate__region__si_do_name=sido_nm).count()
+            )
+        context["map"] = SidoMap(raw_data)
 
-    print(raw_data)
+    # print(raw_data)
     context.update(_get_context(trades))
-    context["map"] = SidoMap()
 
     return render(request, "trades/index.html", context)
 
