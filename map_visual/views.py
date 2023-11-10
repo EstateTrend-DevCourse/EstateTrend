@@ -23,21 +23,29 @@ sido_coordinate = {
 }
 
 
-def SidoMap():
+def SidoMap(sido_data):
     sido_path = "map_visual/geojson/si_do/HangJeongSiDo_ver20230701.json"
     sido_geo = json.load(open(sido_path, encoding="utf-8"))
 
     sido_map = folium.Map(location=[37.541, 126.986], zoom_start=7)
-
-    folium.Choropleth(sido_geo, name="sido-map").add_to(sido_map)
+    data = pd.DataFrame(sido_data)
+    print(data)
+    folium.Choropleth(
+        sido_geo,
+        data=data,
+        columns=["sido_nm", "trading_volume"],
+        key_on="feature.properties.sidonm",
+        name="sido-map",
+    ).add_to(sido_map)
+    # print(sido_data)
 
     folium.GeoJson(
-        data=sido_geo,
         name="sido_info",
+        data=sido_geo,
         # click
-        popup=folium.GeoJsonPopup(
-            fields=["sidonm", "sido_cd"], aliases=["시이름", "코드번호"]
-        ),
+        # popup=folium.GeoJsonPopup(
+        #    fields=["sidonm", "sido_cd"], aliases=["시이름", "코드번호"]
+        # ),
         tooltip=folium.GeoJsonTooltip(
             fields=["sidonm"], aliases=["시이름"], style=("font-size : 15px")
         ),
@@ -47,13 +55,13 @@ def SidoMap():
     return sido_map
 
 
-def SigugunMap(sido_name):
+def SigugunMap(sido_name, sigugun_data):
     sigugun_path = f"map_visual/geojson/si_gu_gun/{sido_name}.json"
     sigugun_geo = json.load(open(sigugun_path, encoding="utf-8"))
 
     data_csv = "map_visual/Total_People_2018.csv"
-    data = pd.read_csv(data_csv, encoding="euc-kr")
-
+    # data = pd.read_csv(data_csv, encoding="euc-kr")
+    data = pd.DataFrame(sigugun_data)
     sigugun_map = folium.Map(
         location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
         zoom_start=11,
@@ -63,8 +71,9 @@ def SigugunMap(sido_name):
         sigugun_geo,
         name="sigugun-map",
         data=data,
-        columns=["Code", "Population"],
-        key_on="feature.properties.sgg_cd",
+        # columns=["Code", "Population"],
+        columns=["gugun_nm", "trading_volume"],
+        key_on="feature.properties.sgg_nm",
         fill_color="OrRd",  # 시각화할 색상
         fill_opacity=0.7,  # 색 투명도
         line_opacity=0.2,  # 경계선 투명도
@@ -88,15 +97,22 @@ def SigugunMap(sido_name):
     return sigugun_map
 
 
-def DongMap(sido_name, sigugun_name):
+def DongMap(sido_name, sigugun_name, dong_data):
     dong_path = f"map_visual/geojson/dong/{sido_name}/{sigugun_name}.json"
     dong_geo = json.load(open(dong_path, encoding="utf-8"))
-
+    data = pd.DataFrame(dong_data)
     dong_map = folium.Map(
         location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
         zoom_start=11,
     )
-    dong_boundary = folium.Choropleth(dong_geo, name="dong-map").add_to(dong_map)
+    dong_boundary = folium.Choropleth(
+        dong_geo,
+        data=data,
+        # columns=["Code", "Population"],
+        columns=["adm_nm", "trading_volume"],
+        key_on="feature.properties.adm_nm",
+        name="dong-map",
+    ).add_to(dong_map)
 
     folium.GeoJson(
         data=dong_geo,
