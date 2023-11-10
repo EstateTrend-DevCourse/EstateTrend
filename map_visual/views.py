@@ -1,6 +1,7 @@
 import json
 import folium
 import pandas as pd
+import geopandas
 
 sido_coordinate = {
     "서울특별시": [37.5311, 126.9814],
@@ -25,15 +26,17 @@ sido_coordinate = {
 
 def SidoMap(sido_data):
     sido_path = "map_visual/geojson/si_do/HangJeongSiDo_ver20230701.json"
-    sido_geo = json.load(open(sido_path, encoding="utf-8"))
+    # sido_geo = json.load(open(sido_path, encoding="utf-8"))
+    sido_geo = geopandas.read_file(sido_path)
+    data = pd.DataFrame(sido_data)
+    result = pd.merge(sido_geo, data, on="sidonm")
 
     sido_map = folium.Map(location=[37.541, 126.986], zoom_start=7)
-    data = pd.DataFrame(sido_data)
-    print(data)
+
     folium.Choropleth(
         sido_geo,
         data=data,
-        columns=["sido_nm", "trading_volume"],
+        columns=["sidonm", "trading_volume"],
         key_on="feature.properties.sidonm",
         name="sido-map",
     ).add_to(sido_map)
@@ -41,13 +44,15 @@ def SidoMap(sido_data):
 
     folium.GeoJson(
         name="sido_info",
-        data=sido_geo,
+        data=result,
         # click
         # popup=folium.GeoJsonPopup(
         #    fields=["sidonm", "sido_cd"], aliases=["시이름", "코드번호"]
         # ),
         tooltip=folium.GeoJsonTooltip(
-            fields=["sidonm"], aliases=["시이름"], style=("font-size : 15px")
+            fields=["sidonm", "trading_volume"],
+            aliases=["지역이름", "거래량"],
+            style=("font-size : 15px"),
         ),
     ).add_to(sido_map)
 
@@ -57,11 +62,11 @@ def SidoMap(sido_data):
 
 def SigugunMap(sido_name, sigugun_data):
     sigugun_path = f"map_visual/geojson/si_gu_gun/{sido_name}.json"
-    sigugun_geo = json.load(open(sigugun_path, encoding="utf-8"))
-
-    data_csv = "map_visual/Total_People_2018.csv"
-    # data = pd.read_csv(data_csv, encoding="euc-kr")
+    # sigugun_geo = json.load(open(sigugun_path, encoding="utf-8"))
+    sigugun_geo = geopandas.read_file(sigugun_path)
     data = pd.DataFrame(sigugun_data)
+    result = pd.merge(sigugun_geo, data, on="sgg_nm")
+
     sigugun_map = folium.Map(
         location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
         zoom_start=11,
@@ -72,21 +77,23 @@ def SigugunMap(sido_name, sigugun_data):
         name="sigugun-map",
         data=data,
         # columns=["Code", "Population"],
-        columns=["gugun_nm", "trading_volume"],
+        columns=["sgg_nm", "trading_volume"],
         key_on="feature.properties.sgg_nm",
         fill_color="OrRd",  # 시각화할 색상
         fill_opacity=0.7,  # 색 투명도
         line_opacity=0.2,  # 경계선 투명도
-        legend_name="2018년 인구수",  # 색상 범주 이름
+        # legend_name="2018년 인구수",  # 색상 범주 이름
     ).add_to(sigugun_map)
 
     folium.GeoJson(
-        data=sigugun_geo,
+        data=result,
         name="sigugun_info",
         # click
-        popup=folium.GeoJsonPopup(fields=["sgg_nm", "sgg_cd"], aliases=["구이름", "코드번호"]),
+        # popup=folium.GeoJsonPopup(
+        #    fields=["sgg_nm", "trading_volume"], aliases=["지역이름", "거래량"]
+        # ),
         tooltip=folium.GeoJsonTooltip(
-            fields=["sido_nm", "sido_cd"], aliases=["시이름", "코드번호"]
+            fields=["sgg_nm", "trading_volume"], aliases=["지역 이름", "거래량"]
         ),
     ).add_to(sigugun_map)
 
@@ -98,13 +105,20 @@ def SigugunMap(sido_name, sigugun_data):
 
 
 def DongMap(sido_name, sigugun_name, dong_data):
+    sigugun_name = sigugun_name.replace(" ", "")
     dong_path = f"map_visual/geojson/dong/{sido_name}/{sigugun_name}.json"
-    dong_geo = json.load(open(dong_path, encoding="utf-8"))
+    # dong_geo = json.load(open(dong_path, encoding="utf-8"))
+    dong_geo = geopandas.read_file(dong_path)
     data = pd.DataFrame(dong_data)
+    data["adm_nm"] = sido_name + " " + sigugun_name + " " + data["dong_nm"]
+
+    result = pd.merge(dong_geo, data, on="adm_nm")
+
     dong_map = folium.Map(
         location=[sido_coordinate[sido_name][0], sido_coordinate[sido_name][1]],
         zoom_start=11,
     )
+
     dong_boundary = folium.Choropleth(
         dong_geo,
         data=data,
@@ -115,15 +129,15 @@ def DongMap(sido_name, sigugun_name, dong_data):
     ).add_to(dong_map)
 
     folium.GeoJson(
-        data=dong_geo,
+        data=result,
         name="dong_info",
         # click
-        popup=folium.GeoJsonPopup(
-            fields=["adm_nm", "adm_cd2"], aliases=["지역명", "코드번호"]
-        ),
+        # popup=folium.GeoJsonPopup(
+        #    fields=["adm_nm", "adm_cd2"], aliases=["지역명", "코드번호"]
+        # ),
         tooltip=folium.GeoJsonTooltip(
-            fields=["sidonm", "sido", "sggnm", "sgg"],
-            aliases=["시이름", "코드번호", "구이름", "코드번호"],
+            fields=["adm_nm", "trading_volume", "average_price"],
+            aliases=["지역이름", "거래량", "평균 매매가"],
         ),
     ).add_to(dong_map)
 
