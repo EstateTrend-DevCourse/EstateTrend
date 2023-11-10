@@ -48,24 +48,21 @@
 
 		<main>
 			<aside id="Side" class="Side">
-				<!-- 등락  -->
+				<!-- 거래 정보  -->
 				<div id="Info" class="Info">
 					<h3 class="SectionName">거래 정보</h3>
 					<ul style="list-style-type: none">
 						<li>
-							<strong>매매 건수</strong> : {{ trading_volume }}건
+							<strong>매매 건수</strong> : {{trading_volume}} 건
 						</li>
 						<li>
-							<strong>평균 매매가</strong> : {{ average_price }}
-							만원
+							<strong>평균 매매가</strong> : {{average_price}} 만원
 						</li>
 						<li>
-							<strong>가장 높은 매매가</strong> :
-							{{highest_price}} 만원
+							<strong>최고 매매가</strong> : {{highest_price}} 만원
 						</li>
 						<li>
-							<strong>가장 낮은 매매가</strong> : {{lowest_price}}
-							만원
+							<strong>최저 매매가</strong> : {{lowest_price}} 만원
 						</li>
 					</ul>
 				</div>
@@ -79,13 +76,13 @@
 						<ul class="tabs">
 							{% for region in regions %}
 							<li class="tab" style="list-style-type: none">
-								{%if gugun%}
+								{% if gugun %}
 								<a
 									href="{% url 'trades:detail' %}?dong_nm={{sido}}-{{gugun}}-{{region}}"
 								>
 								{{region}}
 								</a>
-								{%elif sido%}
+								{% elif sido %}
 								<a
 									href="{% url 'trades:index' %}?sido_nm={{sido}}&gugun_nm={{region}}"
 								>

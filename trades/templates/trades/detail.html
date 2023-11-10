@@ -1,17 +1,73 @@
-{% if region %}
-<h1>{{region.dong_name}}의 집값 추이는?</h1>
+{% load static %}
 
-<ul>
-	<li>
-		<p>trading volume : {{trading_volume}}</p>
-		<p>average price : {{average_price}}</p>
-		<p>lowest_price : {{lowest_price}}</p>
-		<p>highest_price : {{highest_price}}</p>
-		{% for t in trades%}
-		<p>{{t}}</p>
-		{% endfor %}
-	</li>
-</ul>
-{% else %}
-<p>no real estaes</p>
-{% endif %}
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8" />
+		<!--한글 에러 방지-->
+
+		<title>주택 매매 가격 동향</title>
+
+		<link
+			rel="stylesheet"
+			href="{% static 'css/style.css' %}"
+			type="text/css"
+		/>
+	</head>
+
+	{% if region %}
+	<body>
+		<header>
+			<button
+				class="Button"
+				type="button"
+				onclick="location.href='{% url 'trades:index' %}';"
+			>
+				Home
+			</button>
+
+			<!-- 제목 -->
+			<div id="Title" class="Title">
+				<p id="Logo" class="Logo">주택 매매 가격 동향</p>
+				<p id="SubLogo" class="SubLogo">
+					우리 동네에서 부동산 거래 변화가 가장 큰 곳은 어디일까?
+				</p>
+
+				<h3 class="Location">
+					<p><u>현재 선택 지역 : {{region}}</p></u>
+				</h3>
+			</div>
+		</header>
+
+		<main>
+			<aside id="Side" class="Side">
+				
+				<!-- 거래정보  -->
+				<div id="Info" class="Info">
+					<h3 class="SectionName">거래 정보</h3>
+					<ul style="list-style-type: none">
+						<li>
+							<strong>매매 건수</strong> : {{trading_volume}} 건
+						</li>
+						<li>
+							<strong>평균 매매가</strong> : {{average_price}} 만원
+						</li>
+						<li>
+							<strong>최고 매매가</strong> : {{highest_price}} 만원
+						</li>
+						<li>
+							<strong>최저 매매가</strong> : {{lowest_price}} 만원
+						</li>
+					</ul>
+				</div>
+			</aside>
+		</main>
+
+		<footer>
+			<p><em>프로그래머스 데이터엔지니어링 데브코스 프로젝트</em></p>
+		</footer>
+	</body>
+	{% else %}
+	<p>이 지역에 대한 거래 정보가 없습니다.</p>
+	{% endif %}
+</html>
