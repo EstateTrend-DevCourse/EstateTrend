@@ -79,7 +79,13 @@
 						<ul class="tabs">
 							{% for region in regions %}
 							<li class="tab" style="list-style-type: none">
-								{%if sido%}
+								{%if gugun%}
+								<a
+									href="{% url 'trades:detail' %}?dong_nm={{sido}}-{{gugun}}-{{region}}"
+								>
+								{{region}}
+								</a>
+								{%elif sido%}
 								<a
 									href="{% url 'trades:index' %}?sido_nm={{sido}}&gugun_nm={{region}}"
 								>
