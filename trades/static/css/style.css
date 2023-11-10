@@ -149,15 +149,16 @@ li {
 
 .Info {
 	width: 100%;
-	height: 30%;
+	height: 32%;
 	display: block;
 	background: rgb(254, 252, 252);
 	font-size: 1.1rem;
+	border-bottom: 4px solid;
 }
 
 .ChoiceBar {
 	width: 100%;
-	height: 70%;
+	height: 68%;
 	display: block;
 	float: left;
 	overflow-y: scroll;
