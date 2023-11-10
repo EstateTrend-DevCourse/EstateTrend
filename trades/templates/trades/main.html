@@ -26,54 +26,30 @@
 			</button>
 
 			<!-- 제목 -->
-			<div id="Logo" class="Logo">
-				<p>주택 매매 가격 동향</p>
+			<div id="Title" class="Title">
+				<p id="Logo" class="Logo">주택 매매 가격 동향</p>
 				<p id="SubLogo" class="SubLogo">
 					우리 동네에서 부동산 거래 변화가 가장 큰 곳은 어디일까?
 				</p>
+
+				<h3 class="Location">
+					{% if sido %}
+						{% if gugun %}
+						<p><u>현재 선택 지역 : {{sido}} {{gugun}}</p></u>
+						{% else %}
+						<p><u>현재 선택 지역 : {{sido}}</p></u>
+						{% endif %}
+					{% else %}
+					<p><u>현재 선택 지역 : 전국</p></u>
+					{% endif %}
+				</h3>
 			</div>
 		</header>
 
 		<main>
-			<!-- 지역 선택 -->
-			<aside id="SideBar" class="SideBar">
-				<h3 class="SectionName">지역 선택</h3>
-
-				<h5>
-					{% if regions %}
-					<ul class="tabs">
-						{% for region in regions %}
-						<li class="tab" style="list-style-type: none">
-							{%if sido%}
-							<a
-								href="{% url 'trades:index' %}?sido_nm={{sido}}&gugun_nm={{region}}"
-							>
-								{{region}}
-							</a>
-							{% else %}
-							<a
-								href="{% url 'trades:index' %}?sido_nm={{region}}"
-							>
-								{{region}}
-							</a>
-
-							{% endif %}
-						</li>
-						{% endfor %}
-					</ul>
-
-					{% else %}
-					<p>no regions</p>
-					{% endif %}
-				</h5>
-			</aside>
-			<!--
-
-                내용
-		-->
-			<section id="Contents" class="Contents">
+			<aside id="Side" class="Side">
 				<!-- 등락  -->
-				<div id="updown" class="updown">
+				<div id="Info" class="Info">
 					<h3 class="SectionName">거래 정보</h3>
 					<ul style="list-style-type: none">
 						<li>
@@ -94,16 +70,54 @@
 					</ul>
 				</div>
 
+				<!-- 지역 선택 -->
+				<div id="ChoiceBar" class="ChoiceBar">
+					<h3 class="SectionName">지역 선택</h3>
+					
+					<h5>
+						{% if regions %}
+						<ul class="tabs">
+							{% for region in regions %}
+							<li class="tab" style="list-style-type: none">
+								{%if sido%}
+								<a
+									href="{% url 'trades:index' %}?sido_nm={{sido}}&gugun_nm={{region}}"
+								>
+									{{region}}
+								</a>
+								{% else %}
+								<a
+									href="{% url 'trades:index' %}?sido_nm={{region}}"
+								>
+									{{region}}
+								</a>
+
+								{% endif %}
+							</li>
+							{% endfor %}
+						</ul>
+
+						{% else %}
+						<p>no regions</p>
+						{% endif %}
+					</h5>
+				</div>
+			</aside><!--
+
+                내용
+		--><section id="Contents" class="Contents">
+				
 				<!-- 지도 -->
-				<div id="map" class="map">
-					<h1>지도</h1>
+				<div id="Map" class="Map">
+					<h3 class="SectionName">지도</h3>
+
 					{% include "map_visual/sido_map.html" with sido_map=map%}
 				</div>
 			</section>
 		</main>
 
 		<footer>
-			<p><em>프로그래머스 데브코스 데이터엔지니어링 프로젝트</em></p>
+			<p><em>프로그래머스 데이터엔지니어링 데브코스 프로젝트</em></p>
 		</footer>
 	</body>
 </html>
