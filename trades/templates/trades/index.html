@@ -7,11 +7,13 @@
 	<body>
 		{% block Title %}{% endblock %}
 
-		{% block SideBar %}{% endblock %}
+		{% block Side %}
+			{% block Info %}{% endblock %}
+			{% block ChoiceBar %}{% endblock %}
+		{% endblock %}
 		
 		{% block Contents %}
-			{% block updown %}{% endblock %}
-			{% block map %}{% endblock %}
+			{% block Map %}{% endblock %}
 		{% endblock %}
 	</body>
 </html>
