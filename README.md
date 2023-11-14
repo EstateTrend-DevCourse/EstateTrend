@@ -43,7 +43,7 @@
 - Django Model erd
 
 
-![Image](https://github.com/EstateTrend-DevCourse/EstateTrend/assets/40015447/73e19ae4-846f-45c2-8e3b-d22ad433ae56)
+![Image](https://github.com/EstateTrend-DevCourse/EstateTrend/assets/40015447/b89b084b-3f6b-4ff9-9079-af33071b0f00)
 
 
 ### 기능
