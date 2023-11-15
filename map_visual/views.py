@@ -50,8 +50,8 @@ def SidoMap(sido_data):
         #    fields=["sidonm", "sido_cd"], aliases=["시이름", "코드번호"]
         # ),
         tooltip=folium.GeoJsonTooltip(
-            fields=["sidonm", "trading_volume"],
-            aliases=["지역이름", "거래량"],
+            fields=["sidonm", "trading_volume", "average_price"],
+            aliases=["지역이름", "거래량", "평균 매매가"],
             style=("font-size : 15px"),
         ),
     ).add_to(sido_map)
@@ -93,7 +93,8 @@ def SigugunMap(sido_name, sigugun_data):
         #    fields=["sgg_nm", "trading_volume"], aliases=["지역이름", "거래량"]
         # ),
         tooltip=folium.GeoJsonTooltip(
-            fields=["sgg_nm", "trading_volume"], aliases=["지역 이름", "거래량"]
+            fields=["sgg_nm", "trading_volume", "average_price"],
+            aliases=["지역 이름", "거래량", "평균 매매가"],
         ),
     ).add_to(sigugun_map)
 
